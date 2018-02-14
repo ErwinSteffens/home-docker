@@ -6,10 +6,12 @@ services:
     network_mode: host
     environment:
       TZ: Europe/Amsterdam
+      HOMEBRIDGE_CONFIG_UI: 1
     volumes:
       - ./var/lib/homebridge:/homebridge
     labels:
-      traefik.docker.network: traefik
+      traefik.enable: true
+      traefik.docker.port: 8080
   homeassistant:
     image: homeassistant/raspberrypi2-homeassistant:latest
     restart: always
@@ -19,14 +21,13 @@ services:
     volumes:
       - /etc/hass:/config
     labels:
-      traefik.docker.network: traefik
+      traefik.enable: true
+      traefik.docker.port: 8123
   traefik:
     image: traefik:latest
     restart: always
     environment:
     command: --api --docker --docker.domain=erwinsteffens.com --logLevel=DEBUG
-    networks:
-      - webgateway
     ports:
       - 80:80
       - 443:443
