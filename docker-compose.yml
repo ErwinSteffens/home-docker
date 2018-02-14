@@ -1,0 +1,36 @@
+version: '3'
+services:
+  homebridge:
+    image: oznu/homebridge:latest
+    restart: always
+    network_mode: host
+    environment:
+      TZ: Europe/Amsterdam
+    volumes:
+      - ./var/lib/homebridge:/homebridge
+    labels:
+      traefik.docker.network: traefik
+  homeassistant:
+    image: homeassistant/raspberrypi2-homeassistant:latest
+    restart: always
+    network_mode: host
+    environment:
+      TZ: Europe/Amsterdam
+    volumes:
+      - /etc/hass:/config
+    labels:
+      traefik.docker.network: traefik
+  traefik:
+    image: traefik:latest
+    restart: always
+    environment:
+    command: --api --docker --docker.domain=erwinsteffens.com --logLevel=DEBUG
+    networks:
+      - webgateway
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
