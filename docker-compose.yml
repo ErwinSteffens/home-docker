@@ -26,7 +26,6 @@ services:
   traefik:
     image: traefik:latest
     restart: always
-    environment:
     command: --api --docker --docker.domain=erwinsteffens.com --logLevel=DEBUG
     ports:
       - 80:80
